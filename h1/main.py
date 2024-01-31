@@ -38,7 +38,7 @@ def main():
         print("Option 7: Update Record")
         print("Option 8: Delete a Record")
         print("Option 9: Add a Record")
-        print("Option 0: Exit Program")
+        print("Option 0: Exit Program\n")
 
         choice = input("Enter the number corresponding to your choice: ")
 
