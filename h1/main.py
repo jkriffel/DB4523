@@ -1,5 +1,8 @@
+from Database import DB
+
 def createNewDatabase():
-    print("Creating New Database")
+    database = DB()
+    database.createDB()
 
 def openDatabase():
     print("Open Database")
