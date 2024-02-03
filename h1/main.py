@@ -6,11 +6,12 @@ def createNewDatabase():
 
 def openDatabase():
     database = DB()
-    response = database.openDatabase()
-    if (response):
+    if (database.openDatabase()):
         print("Database opened successfully.")
+        return True
     else: 
          print("Database already opened, or file does not exist")
+         return False
 
 def closeDatabase():
     print("Close Database")
@@ -54,7 +55,7 @@ def main():
         if choice == '1':
             createNewDatabase()
         elif choice == '2':
-            openDatabase()
+            isOpen = openDatabase()
         elif choice == '3':
             closeDatabase()
         elif choice == '4':

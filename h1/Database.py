@@ -60,19 +60,30 @@ class DB:
         with open(config_filename, "x") as config_file:
             config = configparser.ConfigParser()        
             config.add_section('ConfigNumRecords') 
-            config.add_section('ConfigRecordSize')                     
+            config.add_section('ConfigRecordSize')      
+            config.add_section('isOpened')                
             config.set('ConfigNumRecords','num_records','20')                          
-            config.set('ConfigRecordSize','record_size','91')                               
+            config.set('ConfigRecordSize','record_size','91')
+            config.set('isOpened','is_opened','False')                               
             config.write(config_file)                                 
 
     def openDatabase(self):
         filename = input("\nWhat DB file do you want to open?\n")
-        if (filename):
-            
-            return True
-        else: 
+        config_filename = filename + ".config"
+        if (config_filename):
+            config = configparser.ConfigParser()
+            config.read(config_filename)
+            isOpened = config.get('isOpened','is_opened')
+            if isOpened == 'False':
+                config.set('isOpened','is_opened','True')
+                with open(config_filename, "w") as config_file:
+                    config.write(config_file)
+                return True
+            else:
+                return False
+    
+        else:
             return False
-
 
     # read record method
     def readRecord(self, recordNum):
