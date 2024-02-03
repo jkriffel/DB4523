@@ -1,11 +1,15 @@
 import csv
 import os.path
+import configparser
+
+# bytes long for titanic.csv == 200 (records plus spaces) * 25 = 5000 bytes
+# bytes long for smallTitatnic.csv == 20 (records plus spaces) * 25 = 500 bytes
 
 class DB:   
     #default constructor
     def __init__(self):
-        self.recordSize = None
-        self.numRecords = 0
+        self.recordSize = 91
+        self.numRecords = 10
         self.idSize = 10
         self.fnSize = 30
         self.lnSize = 30
@@ -15,19 +19,20 @@ class DB:
         self.dopSize = 30
 
     # create database
-    def createDB(self):
+    def createDatabase(self):
         filename = input("\nWhat CSV file are you creating from?\n")
 
         #Generate file names
         csv_filename = filename + ".csv"
         text_filename = filename + ".data"
+        config_filename = filename + ".config"
 
         # Read the CSV file and write into data files
         with open(csv_filename, "r") as csv_file:
             data_list = list(csv.DictReader(csv_file,fieldnames=('ID','firstName','lastName','age','ticketNum','fare','DOP')))
 
 		# Formatting files with spaces so each field is fixed length, i.e. ID field has a fixed length of 10
-        def writeDB(filestream, dict):
+        def writeRecord(filestream, dict):
             filestream.write("{:{width}.{width}}".format(dict["ID"],width=self.idSize))
             filestream.write("{:{width}.{width}}".format(dict["firstName"],width=self.fnSize))
             filestream.write("{:{width}.{width}}".format(dict["lastName"],width=self.lnSize))
@@ -49,7 +54,24 @@ class DB:
 
         with open(text_filename,"w") as outfile:
             for dict in data_list:
-                writeDB(outfile,dict)
+                writeRecord(outfile,dict)
+
+        # Write the config file
+        with open(config_filename, "x") as config_file:
+            config = configparser.ConfigParser()        
+            config.add_section('ConfigNumRecords') 
+            config.add_section('ConfigRecordSize')                     
+            config.set('ConfigNumRecords','num_records','20')                          
+            config.set('ConfigRecordSize','record_size','91')                               
+            config.write(config_file)                                 
+
+    def openDatabase(self):
+        filename = input("\nWhat DB file do you want to open?\n")
+        if (filename):
+            
+            return True
+        else: 
+            return False
 
 
     # read record method
@@ -72,7 +94,8 @@ class DB:
             self.record = dict({"ID":id,"experience":experience,"marriage":marriage,"wages":wage,"industry":industry})
 
 
-    
+
+
 
     # def createDB(self, filename): 
     #     csv_filename = filename + ".csv"

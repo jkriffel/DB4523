@@ -2,10 +2,15 @@ from Database import DB
 
 def createNewDatabase():
     database = DB()
-    database.createDB()
+    database.createDatabase()
 
 def openDatabase():
-    print("Open Database")
+    database = DB()
+    response = database.openDatabase()
+    if (response):
+        print("Database opened successfully.")
+    else: 
+         print("Database already opened, or file does not exist")
 
 def closeDatabase():
     print("Close Database")
@@ -30,6 +35,7 @@ def addRecord():
 
 
 def main():
+    isOpen = False
     while True:
         print("\nOptions:")
         print("Option 1: Create New Database")
