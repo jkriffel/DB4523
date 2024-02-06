@@ -8,20 +8,20 @@ import configparser
 class DB:   
     #default constructor
     def __init__(self):
-        self.recordSize = 91
+        self.recordSize = 110
         self.numRecords = 10
         self.idSize = 10
-        self.fnSize = 30
-        self.lnSize = 30
-        self.ageSize = 30
-        self.ticketSize = 30
-        self.fareSize = 30 
-        self.dopSize = 30
+        self.fnSize = 20
+        self.lnSize = 20
+        self.ageSize = 10
+        self.ticketSize = 20
+        self.fareSize = 20 
+        self.dopSize = 10
 
     # create database
     def createDatabase(self):
-        filename = input("\nWhat CSV file are you creating from?\n")
-
+        # filename = input("\nWhat CSV file are you creating from?\n")
+        filename = "SmallTitanic"
         #Generate file names
         csv_filename = filename + ".csv"
         text_filename = filename + ".data"
@@ -57,55 +57,72 @@ class DB:
                 writeRecord(outfile,dict)
 
         # Write the config file
-        with open(config_filename, "x") as config_file:
-            config = configparser.ConfigParser()        
-            config.add_section('ConfigNumRecords') 
-            config.add_section('ConfigRecordSize')      
-            config.add_section('isOpened')                
-            config.set('ConfigNumRecords','num_records','20')                          
-            config.set('ConfigRecordSize','record_size','91')
-            config.set('isOpened','is_opened','False')                               
-            config.write(config_file)                                 
+        try:
+            with open(config_filename, "x") as config_file:
+                config = configparser.ConfigParser()        
+                config.add_section('ConfigNumRecords') 
+                config.add_section('ConfigRecordSize')      
+                config.add_section('isOpened')                
+                config.set('ConfigNumRecords','num_records','20')                          
+                config.set('ConfigRecordSize','record_size','91')
+                config.set('isOpened','is_opened','False')                               
+                config.write(config_file)     
+        except FileExistsError:
+            print("Config file already exists")                            
 
-    def openDatabase(self):
-        filename = input("\nWhat DB file do you want to open?\n")
-        config_filename = filename + ".config"
+    def ocDatabase(self, oc):
+        # filename = input("\nWhat DB file do you want to open?\n")
+        # config_filename = filename + ".config"
+        config_filename = "SmallTitanic.config"
         if (config_filename):
             config = configparser.ConfigParser()
             config.read(config_filename)
             isOpened = config.get('isOpened','is_opened')
-            if isOpened == 'False':
+            if isOpened == 'False' and oc == 'open':
                 config.set('isOpened','is_opened','True')
                 with open(config_filename, "w") as config_file:
                     config.write(config_file)
                 return True
-            else:
-                return False
-    
+            elif isOpened == 'True' and oc == 'close':
+                config.set('isOpened','is_opened','False')
+                with open(config_filename, "w") as config_file:
+                    config.write(config_file)
+                return True
         else:
             return False
 
-    # read record method
-    def readRecord(self, recordNum):
-        self.flag = False
-        id = experience = marriage = wage = industry = "None"
 
-        if recordNum >=0 and recordNum < self.record_size:
-            self.text_filename.seek(0,0)
-            self.text_filename.seek(recordNum*self.rec_size)
-            line= self.text_filename.readline().rstrip('\n')
+    # read record method
+    def readRecord(self):
+        try:
+            recordNum = int(input("\nWhat record number do you want to read?\n"))
+        except ValueError:
+            return {"status": -1, "message": "Record not found"}
+        
+        text_filename = open("SmallTitanic.data", 'r+')
+        self.flag = False
+
+        id = firstName = lastName = age = ticket = fare = dop = "None"
+
+        if recordNum >= 0 and recordNum < self.recordSize:
+            text_filename.seek(0,0)
+            text_filename.seek(recordNum*self.recordSize)
+            line = text_filename.readline().rstrip('\n')
             self.flag = True
+            return {"status": 1,"message": "Record: " + line}
         
         if self.flag:
             id = line[0:10]
-            experience = line[10:15]
-            marriage = line[15:20]
-            wage = line[20:40]
-            industry = line[40:70]
-            self.record = dict({"ID":id,"experience":experience,"marriage":marriage,"wages":wage,"industry":industry})
-
-
-
+            firstName = line[10:30]
+            lastName = line[30:50]
+            age = line[50:60]
+            ticket = line[60:80]
+            fare = line[80:100]
+            dop = line[100:110]
+            self.record = dict({"ID":id,"firstName":firstName,"lastName":lastName,"age":age,"ticketNum":ticket,"fare":fare,"DOP":dop})
+            return {"status": 0, "message": "Record Blank"}
+        else:
+            return {"status": -1, "message": "Record not found"}
 
 
     # def createDB(self, filename): 

@@ -6,18 +6,29 @@ def createNewDatabase():
 
 def openDatabase():
     database = DB()
-    if (database.openDatabase()):
+    if (database.ocDatabase("open")):
         print("Database opened successfully.")
-        return True
     else: 
          print("Database already opened, or file does not exist")
-         return False
 
 def closeDatabase():
-    print("Close Database")
+    database = DB()
+    if (database.ocDatabase("close")):
+        print("Database closed successfully.")
+    else: 
+         print("Database already closed, or file does not exist")
 
 def readRecord():
-    print("Read Record")
+    database = DB()
+    # print(database.readRecord())
+    response = database.readRecord()
+    if (response['status'] == 1):
+        print(response['message'])
+    if (response['status'] == 0):
+        print(response['message'])
+    if (response['status'] == -1):
+        print(response['message'])
+       
 
 def displayRecord():
     print("Display Record")
@@ -36,7 +47,6 @@ def addRecord():
 
 
 def main():
-    isOpen = False
     while True:
         print("\nOptions:")
         print("Option 1: Create New Database")
@@ -55,7 +65,7 @@ def main():
         if choice == '1':
             createNewDatabase()
         elif choice == '2':
-            isOpen = openDatabase()
+            openDatabase()
         elif choice == '3':
             closeDatabase()
         elif choice == '4':

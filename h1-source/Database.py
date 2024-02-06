@@ -7,6 +7,7 @@ class DB:
         self.filestream = None
         self.num_record = 0
         self.Id_size=10
+        
         self.Experience_size=5
         self.Marriage_size=5
         self.Wage_size=30
