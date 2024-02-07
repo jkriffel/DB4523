@@ -8,14 +8,14 @@ import configparser
 class DB:   
     #default constructor
     def __init__(self):
-        self.recordSize = 110
-        self.numRecords = 10
-        self.idSize = 10
-        self.fnSize = 20
+        self.record_size = 10
+        self.rec_size = 71
+        self.idSize = 7
+        self.fnSize = 10
         self.lnSize = 20
-        self.ageSize = 10
-        self.ticketSize = 20
-        self.fareSize = 20 
+        self.ageSize = 5
+        self.ticketSize = 10
+        self.fareSize = 10
         self.dopSize = 10
 
     # create database
@@ -64,7 +64,7 @@ class DB:
                 config.add_section('ConfigRecordSize')      
                 config.add_section('isOpened')                
                 config.set('ConfigNumRecords','num_records','20')                          
-                config.set('ConfigRecordSize','record_size','91')
+                config.set('ConfigRecordSize','record_size','72')
                 config.set('isOpened','is_opened','False')                               
                 config.write(config_file)     
         except FileExistsError:
@@ -97,33 +97,33 @@ class DB:
         try:
             recordNum = int(input("\nWhat record number do you want to read?\n"))
         except ValueError:
-            return {"status": -1, "message": "Record not found"}
+            return {"status": -1, "message": "Invalid Input"}
         
         text_filename = open("SmallTitanic.data", 'r+')
         self.flag = False
 
         id = firstName = lastName = age = ticket = fare = dop = "None"
 
-        if recordNum >= 0 and recordNum < self.recordSize:
+        if recordNum >= 0 and recordNum < self.record_size:
             text_filename.seek(0,0)
-            text_filename.seek(recordNum*self.recordSize)
+            text_filename.seek(recordNum*self.rec_size)
             line = text_filename.readline().rstrip('\n')
             self.flag = True
-            return {"status": 1,"message": "Record: " + line}
+            print(line)
+            return {"status": 1,"message": "Record Found"}
         
         if self.flag:
-            id = line[0:10]
-            firstName = line[10:30]
-            lastName = line[30:50]
-            age = line[50:60]
-            ticket = line[60:80]
-            fare = line[80:100]
-            dop = line[100:110]
+            id = line[0:7]
+            firstName = line[7:17]
+            lastName = line[17:37]
+            age = line[37:42]
+            ticket = line[42:52]
+            fare = line[52:62]
+            dop = line[62:72]
             self.record = dict({"ID":id,"firstName":firstName,"lastName":lastName,"age":age,"ticketNum":ticket,"fare":fare,"DOP":dop})
             return {"status": 0, "message": "Record Blank"}
         else:
             return {"status": -1, "message": "Record not found"}
-
 
     # def createDB(self, filename): 
     #     csv_filename = filename + ".csv"
