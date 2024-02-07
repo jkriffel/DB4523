@@ -1,7 +1,7 @@
 import csv
 import os.path
-import configparser
-
+#import configparser
+# Homework 1 part 1 by Zachary Anderson and James Riffel
 # bytes long for titanic.csv == 200 (records plus spaces) * 25 = 5000 bytes
 # bytes long for smallTitatnic.csv == 20 (records plus spaces) * 25 = 500 bytes
 
@@ -9,7 +9,7 @@ class DB:
     #default constructor
     def __init__(self):
         self.record_size = 20
-        self.rec_size = 74
+        self.rec_size = 73
         self.idSize = 7
         self.fnSize = 10
         self.lnSize = 20
@@ -57,40 +57,88 @@ class DB:
                 writeRecord(outfile,dict)
 
         # Write the config file
+        # try:
+        #     with open(config_filename, "x") as config_file:
+        #         config = configparser.ConfigParser()        
+        #         config.add_section('ConfigNumRecords') 
+        #         config.add_section('ConfigRecordSize')      
+        #         config.add_section('isOpened')                
+        #         config.set('ConfigNumRecords','num_records','20')                          
+        #         config.set('ConfigRecordSize','record_size','74')
+        #         config.set('isOpened','is_opened','False')                               
+        #         config.write(config_file)     
+        # except FileExistsError:
+        #     print("Config file already exists")           
+        
         try:
             with open(config_filename, "x") as config_file:
-                config = configparser.ConfigParser()        
-                config.add_section('ConfigNumRecords') 
-                config.add_section('ConfigRecordSize')      
-                config.add_section('isOpened')                
-                config.set('ConfigNumRecords','num_records','20')                          
-                config.set('ConfigRecordSize','record_size','74')
-                config.set('isOpened','is_opened','False')                               
-                config.write(config_file)     
+                config_data = {
+                    'ConfigNumRecords': {'num_records': '20'},
+                    'ConfigRecordSize': {'record_size': '74'},
+                    'isOpened': {'is_opened': 'False'}
+                }
+                config_file.write(config_data)
+                # config_file.write("[ConfigNumRecords]\n")
+                # config_file.write(f"num_records = {config_data['ConfigNumRecords']['num_records']}\n\n")
+                # config_file.write("[ConfigRecordSize]\n")
+                # config_file.write(f"record_size = {config_data['ConfigRecordSize']['record_size']}\n\n")
+                # config_file.write("[isOpened]\n")
+                # config_file.write(f"is_opened = {config_data['isOpened']['is_opened']}\n")
+
         except FileExistsError:
-            print("Config file already exists")                            
+            print("Config file already exists")           
 
     def ocDatabase(self, oc):
-        # filename = input("\nWhat DB file do you want to open?\n")
-        # config_filename = filename + ".config"
+        # # filename = input("\nWhat DB file do you want to open?\n")
+        # # config_filename = filename + ".config"
+        # config_filename = "SmallTitanic.config"
+        # if (config_filename):
+        #     config = configparser.ConfigParser()
+        #     config.read(config_filename)
+        #     isOpened = config.get('isOpened','is_opened')
+        #     if isOpened == 'False' and oc == 'open':
+        #         config.set('isOpened','is_opened','True')
+        #         with open(config_filename, "w") as config_file:
+        #             config.write(config_file)
+        #         return True
+        #     elif isOpened == 'True' and oc == 'close':
+        #         config.set('isOpened','is_opened','False')
+        #         with open(config_filename, "w") as config_file:
+        #             config.write(config_file)
+        #         return True
+        # else:
+        #     return False
         config_filename = "SmallTitanic.config"
-        if (config_filename):
-            config = configparser.ConfigParser()
-            config.read(config_filename)
-            isOpened = config.get('isOpened','is_opened')
-            if isOpened == 'False' and oc == 'open':
-                config.set('isOpened','is_opened','True')
+        if oc == 'open':
+            try:
+                with open(config_filename, "r") as config_file:
+                    isOpened = False
+                    for line in config_file:
+                        if line.strip() == 'is_opened = True':
+                            isOpened = True
+                            break
+                if not isOpened:
+                    with open(config_filename, "a") as config_file:
+                        config_file.write("is_opened = True\n")
+                    return True
+            except FileNotFoundError:
                 with open(config_filename, "w") as config_file:
-                    config.write(config_file)
+                    config_file.write("is_opened = True\n")
                 return True
-            elif isOpened == 'True' and oc == 'close':
-                config.set('isOpened','is_opened','False')
+        elif oc == 'close':
+            try:
+                with open(config_filename, "r") as config_file:
+                    lines = config_file.readlines()
                 with open(config_filename, "w") as config_file:
-                    config.write(config_file)
-                return True
+                    for line in lines:
+                        if line.strip() != 'is_opened = True':
+                            config_file.write(line)
+                    config_file.write("is_opened = False\n")  # Add this line to set is_opened to False
+                    return True
+            except FileNotFoundError:
+                return False
         else:
             return False
-
 
     # read record method
         # self.record_size = 20
