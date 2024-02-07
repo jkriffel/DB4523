@@ -8,8 +8,8 @@ import configparser
 class DB:   
     #default constructor
     def __init__(self):
-        self.record_size = 10
-        self.rec_size = 71
+        self.record_size = 20
+        self.rec_size = 74
         self.idSize = 7
         self.fnSize = 10
         self.lnSize = 20
@@ -64,7 +64,7 @@ class DB:
                 config.add_section('ConfigRecordSize')      
                 config.add_section('isOpened')                
                 config.set('ConfigNumRecords','num_records','20')                          
-                config.set('ConfigRecordSize','record_size','72')
+                config.set('ConfigRecordSize','record_size','74')
                 config.set('isOpened','is_opened','False')                               
                 config.write(config_file)     
         except FileExistsError:
@@ -93,6 +93,8 @@ class DB:
 
 
     # read record method
+        # self.record_size = 20
+        # self.rec_size = 74
     def readRecord(self):
         try:
             recordNum = int(input("\nWhat record number do you want to read?\n"))
@@ -104,7 +106,7 @@ class DB:
 
         id = firstName = lastName = age = ticket = fare = dop = "None"
 
-        if recordNum >= 0 and recordNum < self.record_size:
+        if recordNum >= 0 and recordNum <= self.record_size:
             text_filename.seek(0,0)
             text_filename.seek(recordNum*self.rec_size)
             line = text_filename.readline().rstrip('\n')
@@ -120,6 +122,7 @@ class DB:
             ticket = line[42:52]
             fare = line[52:62]
             dop = line[62:72]
+            
             self.record = dict({"ID":id,"firstName":firstName,"lastName":lastName,"age":age,"ticketNum":ticket,"fare":fare,"DOP":dop})
             return {"status": 0, "message": "Record Blank"}
         else:
