@@ -18,21 +18,10 @@ def closeDatabase():
     else: 
          print("Database already closed, or file does not exist")
 
-def readRecord():
-    database = DB()
-    response = database.getRecord(3)
-    print(response)
-    # if (response['status'] == 1):
-    #     print(response['message'])
-    # if (response['status'] == 0):
-    #     print(response['message'])
-    # if (response['status'] == -1):
-    #     print(response['message'])
-       
-
 def displayRecord():
     database = DB()
-    database.binarySearch(2)
+    response = database.binarySearch(12)
+    print(response)
 
 def createReport():
     print("Create Report")
@@ -53,15 +42,14 @@ def main():
         print("Option 1: Create New Database")
         print("Option 2: Open Database")
         print("Option 3: Close Database")
-        print("Option 4: Read Record")
-        print("Option 5: Display Record")
-        print("Option 6: Create Report")
-        print("Option 7: Update Record")
-        print("Option 8: Delete a Record")
-        print("Option 9: Add a Record")
+        print("Option 4: Display Record")
+        print("Option 5: Create Report")
+        print("Option 6: Update Record")
+        print("Option 7: Delete a Record")
+        print("Option 8: Add a Record")
         print("Option 0: Exit Program\n")
 
-        choice = input("Enter the number corresponding to your choice: ")
+        choice = input("Enter the number corresponding to your choice:\n")
 
         if choice == '1':
             createNewDatabase()
@@ -70,16 +58,14 @@ def main():
         elif choice == '3':
             closeDatabase()
         elif choice == '4':
-            readRecord()
-        elif choice == '5':
             displayRecord()
-        elif choice == '6':
+        elif choice == '5':
             createReport()
-        elif choice == '7':
+        elif choice == '6':
             updateRecord()
-        elif choice == '8':
+        elif choice == '7':
             deleteRecord()
-        elif choice == '9':
+        elif choice == '8':
             addRecord()
         elif choice == '0':
             print("Exiting the program. Goodbye!")

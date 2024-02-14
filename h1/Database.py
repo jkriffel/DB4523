@@ -42,27 +42,13 @@ class DB:
             filestream.write("{:{width}.{width}}".format(dict["fare"],width=self.fareSize))
             filestream.write("{:{width}.{width}}".format(dict["DOP"],width=self.dopSize))
             filestream.write("\n")
-
-            # #write an empty records
-            # filestream.write("{:{width}.{width}}".format('_empty_',width=self.idSize))
-            # filestream.write("{:{width}.{width}}".format(' ',width=self.fnSize))
-            # filestream.write("{:{width}.{width}}".format(' ',width=self.lnSize))
-            # filestream.write("{:{width}.{width}}".format(' ',width=self.ageSize))
-            # filestream.write("{:{width}.{width}}".format(' ',width=self.ticketSize))
-            # filestream.write("{:{width}.{width}}".format(' ',width=self.fareSize))
-            # filestream.write("{:{width}.{width}}".format(' ',width=self.dopSize))
-            # filestream.write("\n")
-
-        # count = 0
         with open(text_filename,"w") as outfile:
             for dict in data_list:
                 writeRecord(outfile,dict)
-                emptyRecord = {"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "0", "fare": "0", "DOP": "Null"}
+                emptyRecord = {"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "s", "fare": "0", "DOP": "Null"}
                 writeRecord(outfile, emptyRecord)
-                # count += 2
 
         # Opening a config file for writing details
-        # self.num_records = count
         config_fileptr = open(config_filename, "w")
         config_fileptr.write(str(self.rec_size) + "\n")
         config_fileptr.write(str(self.record_size) + "\n")
@@ -70,7 +56,6 @@ class DB:
       
 
     def getRecord(self, recordNum):
-            
             text_filename = open("SmallTitanic.data", 'r+')
             self.flag = False
             id = firstName = lastName = age = ticket = fare = dop = "None"
@@ -81,7 +66,6 @@ class DB:
                 line = text_filename.readline().rstrip('\n')
                 self.flag = True
                 # print(line)
-                # return {"status": 1,"message": "Record Found"}
             else:
                 self.flag = False
                 self.record = dict({"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "0", "fare": "0", "DOP": "Null"})
@@ -95,9 +79,6 @@ class DB:
                 fare = line[52:62]
                 dop = line[62:72]
                 self.record = dict({"ID":id,"firstName":firstName,"lastName":lastName,"age":age,"ticketNum":ticket,"fare":fare,"DOP":dop})
-            #     return {"status": 0, "message": "Record Blank"}
-            # else:
-            #     return {"status": -1, "message": "Record not found"}
 
 
     def ocDatabase(self, oc):
@@ -133,69 +114,74 @@ class DB:
         else:
             return False
 
-    #read the database
-    def readDB(self, filename, DBsize, rec_size):
-        self.filestream = filename + ".data"
-        self.record_size = DBsize
-        self.rec_size = rec_size
-        
-        if not os.path.isfile(self.filestream):
-            print(str(self.filestream)+" not found")
-        else:
-            self.text_filename = open(self.filestream, 'r+')
 
-    #Binary Search by record id
+    # Binary Search by record id
     def binarySearch (self, input_ID):
         low = 0
         high = self.record_size - 1
-        found = False
-        while not found and high >= low:
+        regularfound = False
+        emptyFound = False
+        while not regularfound or not emptyFound and high >= low:
             self.middle = (low+high)//2
-            #will update the fields in record dict automatically
+            # Will update the fields in record dict automatically
             self.getRecord(self.middle)
             mid_id = self.record["ID"]
-            print(mid_id)
-            
-            if mid_id!="":
+            #  ------------------------------------------------------------------------- #
+            if mid_id != "0      ":
                 if int(mid_id) == int(input_ID):
-                    found = True
+                    regularfound = True
                     break
                 elif int(mid_id) > int(input_ID):
                     high = self.middle - 1
                 elif int(mid_id) < int(input_ID):
                     low = self.middle + 1
-        if found:
-            return True
+            # #  ------------------------------------------------------------------------- #
+            else: 
+            # Middle was a ID of 0, therefore we need a new mid
+            # If we - 1 to OG mid, we always find a value, and never will go out of bounds as the first and last records exist
+                self.getRecord(self.middle -1)
+                mid_id = self.record["ID"]
+                if int(mid_id) == int(input_ID):
+                    emptyFound = True
+                    break
+                elif int(mid_id) > int(input_ID):
+                    high = self.middle - 1
+                elif int(mid_id) < int(input_ID):
+                    low = self.middle + 1
+
+        if regularfound: 
+            return ("\nRecord found at position: " + str(self.middle))
+        elif emptyFound:
+            return "\nRecord found at position: " + str(self.middle - 1)
         else:
-            print("Could not find record with ID " + str(input_ID))
-            return -1
+            return "\nCould not find record with ID " + str(input_ID)
+            
+    # def findNearestNonEmpty(self, start, low_limit, high_limit):
+    #     step = 1  # Initialize step size
 
-    def findNearestNonEmpty(self, start, low_limit, high_limit):
-        step = 1  # Initialize step size
+    #     while True:
+    #         # Check backward
+    #         if start - step >= low_limit:
+    #             self.getRecord(start - step)
+    #             if self.record["ID"].strip() != "_empty_":
+    #                 #print(self.record)
+    #                 return start - step
 
-        while True:
-            # Check backward
-            if start - step >= low_limit:
-                self.getRecord(start - step)
-                if self.record["ID"].strip() != "_empty_":
-                    #print(self.record)
-                    return start - step
+    #         # Check forward
+    #         if start + step <= high_limit:
+    #             self.getRecord(start + step)
+    #             if self.record["ID"].strip() != "_empty_":
+    #                 #print(self.record)
+    #                 return start + step
 
-            # Check forward
-            if start + step <= high_limit:
-                self.getRecord(start + step)
-                if self.record["ID"].strip() != "_empty_":
-                    #print(self.record)
-                    return start + step
+    #         # Increase step size and repeat
+    #         step += 1
 
-            # Increase step size and repeat
-            step += 1
+    #         # Terminate if beyond the search range
+    #         if start - step < low_limit and start + step > high_limit:
+    #             break
 
-            # Terminate if beyond the search range
-            if start - step < low_limit and start + step > high_limit:
-                break
-
-        return -1  # No non-empty record found
+    #     return -1  # No non-empty record found
 
     #close the database
     def CloseDB(self):
