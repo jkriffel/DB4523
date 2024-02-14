@@ -18,20 +18,21 @@ def closeDatabase():
     else: 
          print("Database already closed, or file does not exist")
 
-def readRecord(input):
+def readRecord():
     database = DB()
-    # print(database.readRecord())
-    response = database.readRecord(input)
-    if (response['status'] == 1):
-        print(response['message'])
-    if (response['status'] == 0):
-        print(response['message'])
-    if (response['status'] == -1):
-        print(response['message'])
+    response = database.getRecord(3)
+    print(response)
+    # if (response['status'] == 1):
+    #     print(response['message'])
+    # if (response['status'] == 0):
+    #     print(response['message'])
+    # if (response['status'] == -1):
+    #     print(response['message'])
        
 
 def displayRecord():
-    print("Display Record")
+    database = DB()
+    database.binarySearch(2)
 
 def createReport():
     print("Create Report")
@@ -47,7 +48,7 @@ def addRecord():
 
 
 def main():
-    # while True:
+    while True:
         print("\nOptions:")
         print("Option 1: Create New Database")
         print("Option 2: Open Database")
@@ -60,39 +61,40 @@ def main():
         print("Option 9: Add a Record")
         print("Option 0: Exit Program\n")
 
-        # choice = input("Enter the number corresponding to your choice: ")
+        choice = input("Enter the number corresponding to your choice: ")
 
-        # if choice == '1':
-        #     createNewDatabase()
-        # elif choice == '2':
-        #     openDatabase()
-        # elif choice == '3':
-        #     closeDatabase()
-        # elif choice == '4':
-        #     readRecord()
-        # elif choice == '5':
-        #     displayRecord()
-        # elif choice == '6':
-        #     createReport()
-        # elif choice == '7':
-        #     updateRecord()
-        # elif choice == '8':
-        #     deleteRecord()
-        # elif choice == '9':
-        #     addRecord()
-        # elif choice == '0':
-        #     print("Exiting the program. Goodbye!")
-        #     break
-        # else:
-        #     print("Invalid choice. Please enter a number between 0 and 9.")
-        createNewDatabase()
-        
-        openDatabase()
-        readRecord(0)
-        readRecord(19)
-        readRecord(6)
-        readRecord(-1)
-        readRecord(1000)
+        if choice == '1':
+            createNewDatabase()
+        elif choice == '2':
+            openDatabase()
+        elif choice == '3':
+            closeDatabase()
+        elif choice == '4':
+            readRecord()
+        elif choice == '5':
+            displayRecord()
+        elif choice == '6':
+            createReport()
+        elif choice == '7':
+            updateRecord()
+        elif choice == '8':
+            deleteRecord()
+        elif choice == '9':
+            addRecord()
+        elif choice == '0':
+            print("Exiting the program. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please enter a number between 0 and 9.")
+
+        # HW1 test cases --> 
+        # createNewDatabase()
+        # openDatabase()
+        # readRecord(0)
+        # readRecord(19)
+        # readRecord(6)
+        # readRecord(-1)
+        # readRecord(1000)
         
 
 main()

@@ -81,7 +81,6 @@ class DB:
 
     #Binary Search by record id
     def binarySearch (self, input_ID):
-        
         low = 0
         high = self.record_size - 1
         found = False
@@ -104,6 +103,7 @@ class DB:
                     low = self.middle + 1
 
         if found:
+            print("Record found at position: ", self.middle)
             return True
 
         else:
