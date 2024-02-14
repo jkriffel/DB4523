@@ -9,6 +9,7 @@ class DB:
     #default constructor
     def __init__(self):
         self.record_size = 20
+        # save as 74 for windows
         self.rec_size = 73
         self.idSize = 7
         self.fnSize = 10
@@ -70,14 +71,14 @@ class DB:
         # except FileExistsError:
         #     print("Config file already exists")           
         
-        try:
-            with open(config_filename, "x") as config_file:
-                config_data = {
-                    'ConfigNumRecords': {'num_records': '20'},
-                    'ConfigRecordSize': {'record_size': '74'},
-                    'isOpened': {'is_opened': 'False'}
-                }
-                config_file.write(config_data)
+        # try:
+        # with open(config_filename, "r") as config_file:
+        #     config_data = {
+        #         'ConfigNumRecords': {'num_records': '20'},
+        #         'ConfigRecordSize': {'record_size': '74'},
+        #         'isOpened': {'is_opened': 'True'}
+        #     }
+        #     config_file.write(config_data)
                 # config_file.write("[ConfigNumRecords]\n")
                 # config_file.write(f"num_records = {config_data['ConfigNumRecords']['num_records']}\n\n")
                 # config_file.write("[ConfigRecordSize]\n")
@@ -85,8 +86,8 @@ class DB:
                 # config_file.write("[isOpened]\n")
                 # config_file.write(f"is_opened = {config_data['isOpened']['is_opened']}\n")
 
-        except FileExistsError:
-            print("Config file already exists")           
+        # except FileExistsError:
+        #     print("Config file already exists")           
 
     def ocDatabase(self, oc):
         # # filename = input("\nWhat DB file do you want to open?\n")
@@ -143,12 +144,12 @@ class DB:
     # read record method
         # self.record_size = 20
         # self.rec_size = 74
-    def readRecord(self):
-        try:
-            recordNum = int(input("\nWhat record number do you want to read?\n"))
-        except ValueError:
-            return {"status": -1, "message": "Invalid Input"}
-        
+    def readRecord(self, input):
+        # try:
+        #     recordNum = int(input("\nWhat record number do you want to read?\n"))
+        # except ValueError:
+        #     return {"status": -1, "message": "Invalid Input"}
+        recordNum = input
         text_filename = open("SmallTitanic.data", 'r+')
         self.flag = False
 
