@@ -20,6 +20,8 @@ def closeDatabase():
 
 def displayRecord():
     database = DB()
+    # hardcode input or use menu or ask user for input
+    # value = input("What ID would you like to find?")
     response = database.binarySearch(12)
     print(response)
 

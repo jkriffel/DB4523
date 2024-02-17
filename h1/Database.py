@@ -150,12 +150,25 @@ class DB:
                     low = self.middle + 1
 
         if regularfound: 
+            self.getRecord(self.middle)
+            printRecord(self.middle, self.record)
             return ("\nRecord found at position: " + str(self.middle))
         elif emptyFound:
             return "\nRecord found at position: " + str(self.middle - 1)
         else:
             return "\nCould not find record with ID " + str(input_ID)
-            
+    
+def printRecord(position, record):
+    print("\nRecord found at position:", position)
+    print("ID:", record["ID"])
+    print("First Name:", record["firstName"])
+    print("Last Name:", record["lastName"])
+    print("Age:", record["age"])
+    print("Ticket Number:", record["ticketNum"])
+    print("Fare:", record["fare"])
+    print("Date of Purchase:", record["DOP"])
+
+        
     # def findNearestNonEmpty(self, start, low_limit, high_limit):
     #     step = 1  # Initialize step size
 
