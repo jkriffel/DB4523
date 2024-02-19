@@ -19,6 +19,16 @@ class DB:
         self.fareSize = 10
         self.dopSize = 10
 
+
+    def printRecord(self, record):
+        print("ID:", record["ID"])
+        print("First Name:", record["firstName"])
+        print("Last Name:", record["lastName"])
+        print("Age:", record["age"])
+        print("Ticket Number:", record["ticketNum"])
+        print("Fare:", record["fare"])
+        print("Date of Purchase:", record["DOP"],"\n")
+
     # create database
     def createDatabase(self):
         # filename = input("\nWhat CSV file are you creating from?\n")
@@ -32,7 +42,7 @@ class DB:
         with open(csv_filename, "r") as csv_file:
             data_list = list(csv.DictReader(csv_file,fieldnames=('ID','firstName','lastName','age','ticketNum','fare','DOP')))
 
-		# Formatting files with spaces so each field is fixed length, i.e. ID field has a fixed length of 10
+		# Formatting files with spaces so each field is fixed length, i.e. ID field has a fixed length of 10 
         def writeRecord(filestream, dict):
             filestream.write("{:{width}.{width}}".format(dict["ID"],width=self.idSize))
             filestream.write("{:{width}.{width}}".format(dict["firstName"],width=self.fnSize))
@@ -42,6 +52,7 @@ class DB:
             filestream.write("{:{width}.{width}}".format(dict["fare"],width=self.fareSize))
             filestream.write("{:{width}.{width}}".format(dict["DOP"],width=self.dopSize))
             filestream.write("\n")
+
         with open(text_filename,"w") as outfile:
             for dict in data_list:
                 writeRecord(outfile,dict)
@@ -54,6 +65,7 @@ class DB:
         config_fileptr.write(str(self.record_size) + "\n")
         config_fileptr.close()
       
+        print("Database created successfully\n")
 
     def getRecord(self, recordNum):
             text_filename = open("SmallTitanic.data", 'r+')
@@ -65,7 +77,6 @@ class DB:
                 text_filename.seek(recordNum*self.rec_size)
                 line = text_filename.readline().rstrip('\n')
                 self.flag = True
-                # print(line)
             else:
                 self.flag = False
                 self.record = dict({"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "0", "fare": "0", "DOP": "Null"})
@@ -121,7 +132,13 @@ class DB:
         high = self.record_size - 1
         regularfound = False
         emptyFound = False
+        outOfBounds = False
+        if (input_ID > self.record_size):
+            outOfBounds = True
+
         while not regularfound or not emptyFound and high >= low:
+            if (low > high) : 
+                break
             self.middle = (low+high)//2
             # Will update the fields in record dict automatically
             self.getRecord(self.middle)
@@ -151,24 +168,85 @@ class DB:
 
         if regularfound: 
             self.getRecord(self.middle)
-            printRecord(self.middle, self.record)
-            return ("\nRecord found at position: " + str(self.middle))
+            # self.printRecord(self.record)
+            return self.middle
+        # ("\nRecord found at position: " + str(self.middle))
         elif emptyFound:
-            return "\nRecord found at position: " + str(self.middle - 1)
+            self.getRecord(self.middle - 1)
+            # self.printRecord(self.record)
+            return (self.middle - 1) 
+        # "\nRecord found at position: " + str(self.middle - 1)
         else:
-            return "\nCould not find record with ID " + str(input_ID)
+            if outOfBounds:
+                return "Out of Bounds"
+            else:
+                return "Not Found"
+        # "\nCould not find record with ID " + str(input_ID)
     
-def printRecord(position, record):
-    print("\nRecord found at position:", position)
-    print("ID:", record["ID"])
-    print("First Name:", record["firstName"])
-    print("Last Name:", record["lastName"])
-    print("Age:", record["age"])
-    print("Ticket Number:", record["ticketNum"])
-    print("Fare:", record["fare"])
-    print("Date of Purchase:", record["DOP"])
+    def displayRecord(self, searchId):
+        searchResult = self.binarySearch(searchId)
+        if (searchResult != "Not Found" and searchResult != "Out of Bounds"):
+            self.getRecord(searchResult)
+            self.printRecord(self.record)
+        else:
+            if (searchResult == "Not Found"):
+                print({"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "0", "fare": "0", "DOP": "Null"},"\n")
+            else:
+                print("Record out of bounds\n")
 
-        
+    def createReport(self):
+        with open("SmallTitanic.data", "r") as file:
+            for i in range(0, 20, 1):
+                self.getRecord(i)
+                if (self.record["ID"] != "0      "):
+                    self.printRecord(self.record)
+                
+
+    def updateRecord(self, changeId, searchId, changedField):
+        searchResult = self.binarySearch(searchId)
+        # 1 = FN   2 = LN  3 = Age  4 = Ticket Number  5 = Fare  6 = DOP
+        if changeId == 0:
+            print("Can not modify ID field\n")
+        if changeId == 1:
+            changedRecord = {"ID":self.record["ID"],"firstName":changedField,"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
+            self.writeRecord(searchResult,changedRecord)
+        if changeId == 2:
+            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":changedField,"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
+            self.writeRecord(searchResult,changedRecord)
+        if changeId == 3:
+            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":changedField,"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
+            self.writeRecord(searchResult,changedRecord)
+        if changeId == 4:
+            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":changedField,"fare":self.record["fare"],"DOP":self.record["DOP"]}
+            self.writeRecord(searchResult,changedRecord)
+        if changeId == 5:
+            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":changedField,"DOP":self.record["DOP"]}
+            self.writeRecord(searchResult,changedRecord)
+        if changeId == 6:
+            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":changedField}
+            self.writeRecord(searchResult,changedRecord)
+            
+    def writeRecord(self, position, dict):
+        text_filename = open("SmallTitanic.data", 'r+')
+        text_filename.seek(0,0)
+        text_filename.seek(position*self.rec_size)
+        text_filename.write(str(dict["ID"]).ljust(self.idSize))
+        text_filename.write(str(dict["firstName"]).ljust(self.fnSize))
+        text_filename.write(str(dict["lastName"]).ljust(self.lnSize))
+        text_filename.write(str(dict["age"]).ljust(self.ageSize))
+        text_filename.write(str(dict["ticketNum"]).ljust(self.ticketSize))
+        text_filename.write(str(dict["fare"]).ljust(self.fareSize))
+        text_filename.write(str(dict["DOP"]).ljust(self.dopSize))
+        text_filename.write('\n')
+    
+    def deleteRecord(self, searchId):
+        searchResult = self.binarySearch(searchId)
+        if (searchResult != "Not Found" and searchResult != "Out of Bounds"):
+            emptyRecord = {"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "s", "fare": "0", "DOP": "Null"}
+            self.writeRecord(searchResult, emptyRecord)
+        else:
+            print("No record found\n")
+
     # def findNearestNonEmpty(self, start, low_limit, high_limit):
     #     step = 1  # Initialize step size
 
