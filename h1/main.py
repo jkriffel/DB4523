@@ -18,9 +18,9 @@ def closeDatabase():
     else: 
          print("Database already closed, or file does not exist\n")
 
-def displayRecord(searchId):
+def displayRecord(searchId,isOpen):
     database = DB()
-    database.displayRecord(searchId)
+    database.displayRecord(searchId,isOpen)
 
 def createReport():
     database = DB()
@@ -34,8 +34,9 @@ def deleteRecord(searchId):
     database = DB()
     database.deleteRecord(searchId)
 
-def addRecord():
-    print("Add Record")
+def addRecord(ID, FN, LN, Age, TicketNumber, Fare, DOP):
+    database = DB()
+    database.addRecord(ID, FN, LN, Age, TicketNumber, Fare, DOP)    
 
 
 def main():
@@ -86,36 +87,41 @@ def main():
             
         # HW1 Part 2 test cases -->
         createNewDatabase()
-        # displayRecord(100)
+        displayRecord(100,False)
         openDatabase()
-        # displayRecord(2)
-        # displayRecord(3)
-        # displayRecord(16)
-        # displayRecord(20)
-        # displayRecord(-1)
+        displayRecord(2,True)
+        displayRecord(3,True)
+        displayRecord(16,True)
+        displayRecord(20,True)
+        displayRecord(-1,True)
 
-        # # Update value -- SearchId, Change Value
-        # # 1 = FN   2 = LN  3 = Age  4 = Ticket Number  5 = Fare  6 = DOP
-        # displayRecord(2) # Display record 2
-        # updateRecord(3, 2, 34) # Update Age on record 2 to 34
-        # displayRecord(2) # Display record 2 to see if it was updated
-        # displayRecord(3) # Display record 3 
-        # updateRecord(0,3,10) # Update ID on record 3 to 10 -- Should fail
-        # displayRecord(3) # Display record 3
-        # displayRecord(20)
-        # updateRecord(6,20,"1/20/1912") # Update DOP on record 20 to 1/20/1912
-        # displayRecord(20) # Display record 20
+        # Update value -- SearchId, Change Value
+        # 1 = FN   2 = LN  3 = Age  4 = Ticket Number  5 = Fare  6 = DOP
+        displayRecord(2,True) # Display record 2
+        updateRecord(3,2,"34") # Update Age on record 2 to 34
+        displayRecord(2,True) # Display record 2 to see if it was updated
+        displayRecord(3,True) # Display record 3 
+        updateRecord(0,3,"10") # Update ID on record 3 to 10 -- Should fail
+        displayRecord(3,True) # Display record 3
+        displayRecord(20,True)
+        updateRecord(6,20,"1/20/1912") # Update DOP on record 20 to 1/20/1912
+        displayRecord(20,True) # Display record 20
 
-        # deleteRecord(2)
-        # displayRecord(2)
+        deleteRecord(2)
+        displayRecord(2,True)
 
-        # deleteRecord(12)
-        # displayRecord(12)
+        deleteRecord(12)
+        displayRecord(12,True)
 
-        # deleteRecord(100) # Should fail
+        deleteRecord(100) # Should fail
 
-        # createReport()
+        createReport()
 
-        
-        
+        addRecord(100,"Sam","Gauch","44","PA 1012","43.33","2/5/1912")
+        updateRecord(3,100,"56")
+
+        closeDatabase()
+
+        displayRecord(2,False)
+ 
 main()

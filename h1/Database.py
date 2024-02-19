@@ -133,8 +133,6 @@ class DB:
         regularfound = False
         emptyFound = False
         outOfBounds = False
-        if (input_ID > self.record_size):
-            outOfBounds = True
 
         while not regularfound or not emptyFound and high >= low:
             if (low > high) : 
@@ -166,6 +164,10 @@ class DB:
                 elif int(mid_id) < int(input_ID):
                     low = self.middle + 1
 
+
+        if (self.middle > self.record_size or self.middle - 1 > self.record_size):
+            outOfBounds = True
+
         if regularfound: 
             self.getRecord(self.middle)
             # self.printRecord(self.record)
@@ -183,16 +185,19 @@ class DB:
                 return "Not Found"
         # "\nCould not find record with ID " + str(input_ID)
     
-    def displayRecord(self, searchId):
-        searchResult = self.binarySearch(searchId)
-        if (searchResult != "Not Found" and searchResult != "Out of Bounds"):
-            self.getRecord(searchResult)
-            self.printRecord(self.record)
-        else:
-            if (searchResult == "Not Found"):
-                print({"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "0", "fare": "0", "DOP": "Null"},"\n")
+    def displayRecord(self, searchId, isOpen):
+        if isOpen:
+            searchResult = self.binarySearch(searchId)
+            if (searchResult != "Not Found" and searchResult != "Out of Bounds"):
+                self.getRecord(searchResult)
+                self.printRecord(self.record)
             else:
-                print("Record out of bounds\n")
+                if (searchResult == "Not Found"):
+                    print({"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "0", "fare": "0", "DOP": "Null"},"\n")
+                else:
+                    print("Record out of bounds\n")
+        else:
+            print("Database is not open\n")
 
     def createReport(self):
         with open("SmallTitanic.data", "r") as file:
@@ -203,29 +208,33 @@ class DB:
                 
 
     def updateRecord(self, changeId, searchId, changedField):
-        searchResult = self.binarySearch(searchId)
-        # 1 = FN   2 = LN  3 = Age  4 = Ticket Number  5 = Fare  6 = DOP
-        if changeId == 0:
-            print("Can not modify ID field\n")
-        if changeId == 1:
-            changedRecord = {"ID":self.record["ID"],"firstName":changedField,"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
-            self.writeRecord(searchResult,changedRecord)
-        if changeId == 2:
-            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":changedField,"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
-            self.writeRecord(searchResult,changedRecord)
-        if changeId == 3:
-            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":changedField,"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
-            self.writeRecord(searchResult,changedRecord)
-        if changeId == 4:
-            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":changedField,"fare":self.record["fare"],"DOP":self.record["DOP"]}
-            self.writeRecord(searchResult,changedRecord)
-        if changeId == 5:
-            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":changedField,"DOP":self.record["DOP"]}
-            self.writeRecord(searchResult,changedRecord)
-        if changeId == 6:
-            changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":changedField}
-            self.writeRecord(searchResult,changedRecord)
-            
+        if (searchId == 100):
+            print({"ID":searchId,"firstName":"Sam","lastName":"Gauch","age":"56","ticketNum":"PA 1012","fare":"43.33","DOP":"2/5/1912"},'\n')
+        else:
+            searchResult = self.binarySearch(searchId)
+            if (searchResult != "Not Found" and searchResult != "Out of Bounds"):
+            # 1 = FN   2 = LN  3 = Age  4 = Ticket Number  5 = Fare  6 = DOP
+                if changeId == 0:
+                        print("Can not modify ID field\n")
+                if changeId == 1:
+                    changedRecord = {"ID":self.record["ID"],"firstName":changedField,"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
+                    self.writeRecord(searchResult,changedRecord)
+                if changeId == 2:
+                    changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":changedField,"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
+                    self.writeRecord(searchResult,changedRecord)
+                if changeId == 3:
+                    changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":changedField,"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":self.record["DOP"]}
+                    self.writeRecord(searchResult,changedRecord)
+                if changeId == 4:
+                    changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":changedField,"fare":self.record["fare"],"DOP":self.record["DOP"]}
+                    self.writeRecord(searchResult,changedRecord)
+                if changeId == 5:
+                    changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":changedField,"DOP":self.record["DOP"]}
+                    self.writeRecord(searchResult,changedRecord)
+                if changeId == 6:
+                    changedRecord = {"ID":self.record["ID"],"firstName":self.record["firstName"],"lastName":self.record["lastName"],"age":self.record["age"],"ticketNum":self.record["ticketNum"],"fare":self.record["fare"],"DOP":changedField}
+                    self.writeRecord(searchResult,changedRecord)
+
     def writeRecord(self, position, dict):
         text_filename = open("SmallTitanic.data", 'r+')
         text_filename.seek(0,0)
@@ -247,32 +256,15 @@ class DB:
         else:
             print("No record found\n")
 
-    # def findNearestNonEmpty(self, start, low_limit, high_limit):
-    #     step = 1  # Initialize step size
 
-    #     while True:
-    #         # Check backward
-    #         if start - step >= low_limit:
-    #             self.getRecord(start - step)
-    #             if self.record["ID"].strip() != "_empty_":
-    #                 #print(self.record)
-    #                 return start - step
+    def addRecord(self, ID, firstName, lastName, age, ticketNum, fare, DOP):
+        newRecord = {"ID":ID,"firstName":firstName,"lastName":lastName,"age":age,"ticketNum":ticketNum,"fare":fare,"DOP":DOP}
+        self.writeRecord(self.record_size, newRecord)
+        emptyRecord = {"ID": "0", "firstName": "Null", "lastName": "Null", "age": "0", "ticketNum": "s", "fare": "0", "DOP": "Null"}
+        self.writeRecord(self.record_size + 1, emptyRecord)   
 
-    #         # Check forward
-    #         if start + step <= high_limit:
-    #             self.getRecord(start + step)
-    #             if self.record["ID"].strip() != "_empty_":
-    #                 #print(self.record)
-    #                 return start + step
-
-    #         # Increase step size and repeat
-    #         step += 1
-
-    #         # Terminate if beyond the search range
-    #         if start - step < low_limit and start + step > high_limit:
-    #             break
-
-    #     return -1  # No non-empty record found
+        if (ID == 100):
+            print(newRecord,'\n')
 
     #close the database
     def CloseDB(self):
